@@ -4,13 +4,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
 import thangnv44995.fpoly.mob2041_ph44995.DBHelper;
 import thangnv44995.fpoly.mob2041_ph44995.R;
 
@@ -48,14 +42,17 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
             if (db.checkUsername(user)) {
-                Toast.makeText(this, "User đã tồn tại", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Tài khoản đã tồn tại", Toast.LENGTH_SHORT).show();
             } else {
-                boolean insert = db.insertData(user, pass);
+                // ĐĂNG KÝ MẶC ĐỊNH LÀ KHÁCH HÀNG
+                // Lưu ý: Tên hàm phải khớp với hàm bạn viết trong DBHelper
+                boolean insert = db.insertData(user, pass, "Khách hàng");
+
                 if (insert) {
-                    Toast.makeText(this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
-                    finish(); // quay lại login
+                    Toast.makeText(this, "Đăng ký Khách hàng thành công", Toast.LENGTH_SHORT).show();
+                    finish();
                 } else {
-                    Toast.makeText(this, "Đăng ký thất bại", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Lỗi hệ thống khi đăng ký", Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -1,10 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Screen.HomeActivity">
+    android:background="#F5F5F5">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            app:cardCornerRadius="8dp"
+            android:layout_marginBottom="20dp">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_gallery" /> </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:id="@+id/layoutThongKe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thống kê"
+                android:textColor="#2196F3"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"/>
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="3"
+                android:alignmentMode="alignMargins">
+
+                <LinearLayout style="@style/IconBoxStyle" android:id="@+id/btnDoanhThu">
+                    <ImageView style="@style/IconImageStyle" android:src="@android:drawable/ic_menu_report_image" />
+                    <TextView style="@style/IconTextStyle" android:text="Doanh thu" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/IconBoxStyle" android:id="@+id/btnTopSanPham">
+                    <ImageView style="@style/IconImageStyle" android:src="@android:drawable/ic_menu_sort_by_size" />
+                    <TextView style="@style/IconTextStyle" android:text="Top sản phẩm" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/IconBoxStyle" android:id="@+id/btnTopKhachHang">
+                    <ImageView style="@style/IconImageStyle" android:src="@android:drawable/ic_menu_myplaces" />
+                    <TextView style="@style/IconTextStyle" android:text="Top khách hàng" />
+                </LinearLayout>
+            </GridLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutQuanLy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Quản lý"
+                android:textColor="#2196F3"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"/>
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="3">
+
+                <LinearLayout style="@style/IconBoxStyle" android:id="@+id/btnSanPham">
+                    <ImageView style="@style/IconImageStyle" android:src="@android:drawable/ic_input_add" />
+                    <TextView style="@style/IconTextStyle" android:text="Sản phẩm" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/IconBoxStyle" android:id="@+id/btnKhachHang">
+                    <ImageView style="@style/IconImageStyle" android:src="@android:drawable/ic_menu_agenda" />
+                    <TextView style="@style/IconTextStyle" android:text="Khách hàng" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/IconBoxStyle" android:id="@+id/btnHoaDon">
+                    <ImageView style="@style/IconImageStyle" android:src="@android:drawable/ic_menu_save" />
+                    <TextView style="@style/IconTextStyle" android:text="Hóa đơn" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/IconBoxStyle" android:id="@+id/btnDanhMuc">
+                    <ImageView style="@style/IconImageStyle" android:src="@android:drawable/ic_menu_directions" />
+                    <TextView style="@style/IconTextStyle" android:text="Danh mục" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/IconBoxStyle" android:id="@+id/btnNhanVien">
+                    <ImageView style="@style/IconImageStyle" android:src="@android:drawable/ic_menu_view" />
+                    <TextView style="@style/IconTextStyle" android:text="Nhân viên" />
+                </LinearLayout>
+            </GridLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Người dùng"
+                android:textColor="#2196F3"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"/>
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="3">
+
+                <LinearLayout style="@style/IconBoxStyle" android:id="@+id/btnDoiMatKhau">
+                    <ImageView style="@style/IconImageStyle" android:src="@android:drawable/ic_lock_idle_lock" />
+                    <TextView style="@style/IconTextStyle" android:text="Đổi mật khẩu" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/IconBoxStyle" android:id="@+id/btnDangXuat">
+                    <ImageView style="@style/IconImageStyle" android:src="@android:drawable/ic_lock_power_off" />
+                    <TextView style="@style/IconTextStyle" android:text="Đăng xuất" />
+                </LinearLayout>
+            </GridLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

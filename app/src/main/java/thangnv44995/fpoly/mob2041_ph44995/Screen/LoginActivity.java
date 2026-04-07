@@ -5,15 +5,8 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
 import thangnv44995.fpoly.mob2041_ph44995.DBHelper;
-import thangnv44995.fpoly.mob2041_ph44995.MainActivity;
 import thangnv44995.fpoly.mob2041_ph44995.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -34,27 +27,33 @@ public class LoginActivity extends AppCompatActivity {
 
         db = new DBHelper(this);
 
-        // LOGIN
         btnLogin.setOnClickListener(v -> {
             String user = edtUser.getText().toString().trim();
             String pass = edtPass.getText().toString().trim();
 
             if (user.isEmpty() || pass.isEmpty()) {
-                Toast.makeText(this, "Không được để trống", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng nhập đủ thông tin", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (db.checkLogin(user, pass)) {
-                Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+            // Gọi hàm checkLogin mới trả về chuỗi Role (như đã hướng dẫn ở câu trước)
+            String role = db.checkLoginReturnRole(user, pass);
 
-                startActivity(new Intent(this, HomeActivity.class));
-                finish(); // không quay lại login
+            if (role != null) {
+                Toast.makeText(this, "Đăng nhập: " + role, Toast.LENGTH_SHORT).show();
+
+                // Gửi tên đăng nhập và vai trò sang HomeActivity để xử lý hiển thị giao diện khác nhau
+                Intent intent = new Intent(this, HomeActivity.class);
+                intent.putExtra("USER_NAME", user);
+                intent.putExtra("USER_ROLE", role);
+
+                startActivity(intent);
+                finish();
             } else {
                 Toast.makeText(this, "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // CHUYỂN SANG REGISTER
         btnGoRegister.setOnClickListener(v -> {
             startActivity(new Intent(this, RegisterActivity.class));
         });
