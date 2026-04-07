@@ -71,6 +71,14 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setClickEvents() {
+        // Trong HomeActivity.java
+        LinearLayout btnDanhMuc = findViewById(R.id.btnDanhMuc);
+        if (btnDanhMuc != null) {
+            btnDanhMuc.setOnClickListener(v -> {
+                Intent intent = new Intent(HomeActivity.this, QuanLyDanhMucActivity.class);
+                startActivity(intent);
+            });
+        }
         // Ví dụ click Đăng xuất
         if (btnDangXuat != null) {
             btnDangXuat.setOnClickListener(v -> {
