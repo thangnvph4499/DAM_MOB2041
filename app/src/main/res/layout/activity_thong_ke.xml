@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarHD"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#D1C4E9"
+        app:navigationIcon="@android:drawable/ic_menu_revert"
+        app:title="Thống kê doanh thu" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <EditText
+            android:id="@+id/edtTuNgay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Từ ngày (YYYY-MM-DD)"
+            android:focusable="false"
+            android:drawableEnd="@android:drawable/ic_menu_my_calendar" />
+
+        <EditText
+            android:id="@+id/edtDenNgay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Đến ngày (YYYY-MM-DD)"
+            android:layout_marginTop="10dp"
+            android:focusable="false"
+            android:drawableEnd="@android:drawable/ic_menu_my_calendar" />
+
+        <Button
+            android:id="@+id/btnThongKe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Thống kê doanh thu"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#00ADEF" />
+
+        <TextView
+            android:id="@+id/txtDoanhThu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Doanh thu: 0 VND"
+            android:textColor="#FF0000"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="30dp"
+            android:gravity="center" />
+    </LinearLayout>
+
+</LinearLayout>

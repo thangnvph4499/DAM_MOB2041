@@ -9,14 +9,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import thangnv44995.fpoly.mob2041_ph44995.Model.HoaDonChiTiet;
 import thangnv44995.fpoly.mob2041_ph44995.R;
 
 public class HDCTAdapter extends RecyclerView.Adapter<HDCTAdapter.ViewHolder> {
-    private Context context;
-    private ArrayList<HoaDonChiTiet> list;
+    private final Context context;
+    private final ArrayList<HoaDonChiTiet> list;
+    // Sử dụng DecimalFormat để định dạng tiền tệ chuyên nghiệp hơn
+    private final DecimalFormat formatter = new DecimalFormat("###,###,###");
 
     public HDCTAdapter(Context context, ArrayList<HoaDonChiTiet> list) {
         this.context = context;
@@ -26,7 +29,8 @@ public class HDCTAdapter extends RecyclerView.Adapter<HDCTAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.item_hdct, parent, false);
+        // Sử dụng LayoutInflater đúng cách từ context của parent
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_hdct, parent, false);
         return new ViewHolder(v);
     }
 
@@ -34,14 +38,22 @@ public class HDCTAdapter extends RecyclerView.Adapter<HDCTAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         HoaDonChiTiet hdct = list.get(position);
 
-        holder.txtTen.setText(hdct.getTenSP());
-        holder.txtGia.setText(String.format("Giá: %,d đ", hdct.getGiaSP()));
-        holder.txtSoLuong.setText("x" + hdct.getSoLuong());
+        if (hdct != null) {
+            // Hiển thị tên sản phẩm
+            holder.txtTen.setText(hdct.getTenSP());
+
+            // Định dạng giá tiền (Tránh lỗi nếu giaSP là kiểu int/long)
+            String giaFormatted = formatter.format(hdct.getGiaSP()) + " đ";
+            holder.txtGia.setText("Giá: " + giaFormatted);
+
+            // Hiển thị số lượng
+            holder.txtSoLuong.setText("x" + hdct.getSoLuong());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return (list != null) ? list.size() : 0;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

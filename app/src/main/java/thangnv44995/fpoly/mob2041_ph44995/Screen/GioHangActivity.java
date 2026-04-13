@@ -53,21 +53,20 @@ public class GioHangActivity extends AppCompatActivity {
             }
 
             // 1. Tạo dữ liệu hóa đơn
-            String maHD = "HD" + System.currentTimeMillis(); // Mã HD duy nhất theo thời gian
-            String ngayLap = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(new Date());
-            String tenNV = "Admin"; // Bạn có thể lấy tên user đăng nhập nếu có
+            String maHD = "HD" + System.currentTimeMillis();
+
+            // SỬA TẠI ĐÂY: Lưu định dạng chuẩn YYYY-MM-DD để SQLite thống kê được
+            String ngayLap = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+            String tenNV = "Admin";
             String tenKH = "Khách hàng vãng lai";
 
-            // 2. Gọi hàm insertHoaDon (hàm này đã bao gồm copy từ giỏ hàng sang chi tiết)
+            // 2. Gọi hàm insertHoaDon
             boolean check = db.insertHoaDon(maHD, tenNV, tenKH, ngayLap, (double) tongTien);
 
             if (check) {
-                // 3. Xóa sạch giỏ hàng trong Database
                 db.xoaGioHang();
-
                 Toast.makeText(this, "Thanh toán thành công!", Toast.LENGTH_SHORT).show();
-
-                // 4. Đóng màn hình hoặc load lại giao diện trống
                 finish();
             } else {
                 Toast.makeText(this, "Lỗi thanh toán!", Toast.LENGTH_SHORT).show();

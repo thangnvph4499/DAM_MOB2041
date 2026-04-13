@@ -17,7 +17,7 @@ import thangnv44995.fpoly.mob2041_ph44995.R;
 public class HomeActivity extends AppCompatActivity {
 
     // 1. Thêm btnHoaDon vào danh sách khai báo
-    LinearLayout layoutThongKe, btnNhanVien, btnDangXuat, btnDanhMuc, btnSanPham, btnHoaDon;
+    LinearLayout layoutThongKe, btnNhanVien, btnDangXuat, btnDanhMuc, btnSanPham, btnHoaDon,btnDoanhThu,btnTopSanPham;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +46,9 @@ public class HomeActivity extends AppCompatActivity {
         btnDangXuat = findViewById(R.id.btnDangXuat);
         btnDanhMuc = findViewById(R.id.btnDanhMuc);
         btnSanPham = findViewById(R.id.btnSanPham);
-
-        // 2. Ánh xạ nút Hóa đơn (Hãy đảm bảo ID này trùng với ID trong activity_home.xml)
         btnHoaDon = findViewById(R.id.btnHoaDon);
+        btnDoanhThu = findViewById(R.id.btnDoanhThu);
+        btnTopSanPham = findViewById(R.id.btnTopSanPham);
     }
 
     private void phanQuyenGiaoDien(String role) {
@@ -80,6 +80,20 @@ public class HomeActivity extends AppCompatActivity {
         if (btnHoaDon != null) {
             btnHoaDon.setOnClickListener(v -> {
                 Intent intent = new Intent(HomeActivity.this, QuanLyHoaDonActivity.class);
+                startActivity(intent);
+            });
+        }
+        // 4. Chuyển sang màn hình Thống kê
+        if (btnDoanhThu != null) {
+            btnDoanhThu.setOnClickListener(v -> {
+                Intent intent = new Intent(HomeActivity.this, ThongKeActivity.class);
+                startActivity(intent);
+            });
+        }
+        // 5. Chuyển sang màn hình Thống kê top sp
+        if (btnTopSanPham != null) {
+            btnTopSanPham.setOnClickListener(v -> {
+                Intent intent = new Intent(HomeActivity.this, ThongKeTopActivity.class);
                 startActivity(intent);
             });
         }

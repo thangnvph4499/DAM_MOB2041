@@ -5,11 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "User.db";
-    public static final int DB_VERSION = 5;
+    public static final int DB_VERSION = 7;
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -221,20 +222,61 @@ public class DBHelper extends SQLiteOpenHelper {
     public boolean insertHoaDon(String maHD, String tenNV, String tenKH, String ngay, double tong) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put("maHD", maHD); cv.put("tenNV", tenNV);
-        cv.put("tenKH", tenKH); cv.put("ngayLap", ngay);
+        cv.put("maHD", maHD);
+        cv.put("tenNV", tenNV);
+        cv.put("tenKH", tenKH);
+        cv.put("ngayLap", ngay); // Lưu ý: 'ngay' phải là định dạng yyyy-MM-dd
         cv.put("tongTien", tong);
 
         long result = db.insert("hoadon", null, cv);
         if (result == -1) return false;
 
-        // Sau khi lưu hóa đơn, bê sản phẩm từ giỏ hàng sang chi tiết hóa đơn
-        db.execSQL("INSERT INTO hoadon_chitiet (maHD, tenSP, giaSP, soLuong) " +
-                "SELECT '" + maHD + "', tenSP, giaSP, soLuongMua FROM giohang");
+        // SỬA LẠI ĐOẠN NÀY: Dùng mảng Object để tránh lỗi SQL Injection
+        String sqlInsertChiTiet = "INSERT INTO hoadon_chitiet (maHD, tenSP, giaSP, soLuong) " +
+                "SELECT ?, tenSP, giaSP, soLuongMua FROM giohang";
+        db.execSQL(sqlInsertChiTiet, new Object[]{maHD});
+
         return true;
     }
 
     public Cursor getChiTietHoaDon(String maHD) {
         return getReadableDatabase().rawQuery("SELECT * FROM hoadon_chitiet WHERE maHD = ?", new String[]{maHD});
+    }
+
+    // ================= 6. THỐNG KÊ DOANH THU (MỚI) =================
+
+    public double getDoanhThu(String tuNgay, String denNgay) {
+        double doanhThu = 0;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Sử dụng IFNULL để trả về 0 nếu không có kết quả, tránh lỗi NullPointerException
+        String sql = "SELECT IFNULL(SUM(tongTien), 0) FROM hoadon WHERE ngayLap BETWEEN ? AND ?";
+
+        // Log để bạn kiểm tra trong Logcat xem ngày truyền xuống có đúng yyyy-MM-dd không
+        Log.d("SQL_CHECK", "Query: " + tuNgay + " to " + denNgay);
+
+        Cursor cursor = db.rawQuery(sql, new String[]{tuNgay, denNgay});
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                doanhThu = cursor.getDouble(0);
+            }
+            cursor.close();
+        }
+        return doanhThu;
+    }
+    // ================= 7. THỐNG KÊ TOP SẢN PHẨM (MỚI) =================
+
+    public Cursor getTopSanPham(String tuNgay, String denNgay, String limit) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String sql = "SELECT hc.tenSP, SUM(hc.soLuong) AS tongSoLuong " +
+                "FROM hoadon_chitiet hc " +
+                "INNER JOIN hoadon h ON hc.maHD = h.maHD " +
+                "WHERE h.ngayLap BETWEEN ? AND ? " +
+                "GROUP BY hc.tenSP " +
+                "ORDER BY tongSoLuong DESC " +
+                "LIMIT ?";
+
+        return db.rawQuery(sql, new String[]{tuNgay, denNgay, limit});
     }
 }

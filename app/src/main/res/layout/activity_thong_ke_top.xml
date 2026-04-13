@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarHD"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#D1C4E9"
+        app:navigationIcon="@android:drawable/ic_menu_revert"
+        app:title="Thống kê top sản phẩm" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <EditText
+            android:id="@+id/edtTuNgayTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Từ ngày (YYYY-MM-DD)"
+            android:focusable="false" />
+
+        <EditText
+            android:id="@+id/edtDenNgayTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Đến ngày (YYYY-MM-DD)"
+            android:focusable="false" />
+
+        <EditText
+            android:id="@+id/edtSoLuongTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Số lượng cần thống kê (ví dụ: 10)"
+            android:inputType="number" />
+
+        <TextView
+            android:id="@+id/txtLoiTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vui lòng nhập đầy đủ thông tin."
+            android:textColor="#F44336"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnThongKeTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Thống kê top sản phẩm"
+            android:backgroundTint="#03A9F4" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTopSP"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>
