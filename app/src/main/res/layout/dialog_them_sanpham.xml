@@ -1,0 +1,29 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText android:id="@+id/edtMaSP_Dialog" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Mã sản phẩm"/>
+        <EditText android:id="@+id/edtTenSP_Dialog" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Tên sản phẩm"/>
+        <EditText android:id="@+id/edtGiaSP_Dialog" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Giá bán" android:inputType="number"/>
+        <EditText android:id="@+id/edtSoLuong_Dialog" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Số lượng" android:inputType="number"/>
+        <EditText android:id="@+id/edtDVT_Dialog" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Đơn vị tính"/>
+        <EditText android:id="@+id/edtNgay_Dialog" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Ngày nhập"/>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Chọn danh mục:" android:layout_marginTop="10dp"/>
+        <Spinner android:id="@+id/spnDanhMuc_Dialog" android:layout_width="match_parent" android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+            <Button android:id="@+id/btnLuuSP" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Lưu"/>
+            <Button android:id="@+id/btnHuySP" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="Hủy"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

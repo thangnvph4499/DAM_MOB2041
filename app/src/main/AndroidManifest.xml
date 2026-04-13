@@ -13,6 +13,9 @@
         android:theme="@style/Theme.MOB2041_PH44995"
         tools:targetApi="31">
         <activity
+            android:name=".Screen.QuanLySanPhamActivity"
+            android:exported="false" />
+        <activity
             android:name=".Screen.QuanLyDanhMucActivity"
             android:exported="false" />
         <activity
