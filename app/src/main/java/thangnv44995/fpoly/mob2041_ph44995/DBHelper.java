@@ -56,7 +56,7 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // ================= 1. QUẢN LÝ USER (ĐẦY ĐỦ) =================
+    // ================= 1. QUẢN LÝ USER =================
 
     public boolean checkUsername(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -144,6 +144,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     // ================= 4. QUẢN LÝ GIỎ HÀNG =================
 
+    // Hàm cộng sản phẩm (Đã có)
     public boolean addSanPhamToGioHang(String ma, String ten, int gia) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("SELECT soLuongMua FROM giohang WHERE maSP = ?", new String[]{ma});
@@ -161,6 +162,29 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return true;
+    }
+
+    // HÀM MỚI: Giảm số lượng hoặc xóa nếu = 0
+    public boolean minusSanPhamTrongGioHang(String ma) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT soLuongMua FROM giohang WHERE maSP = ?", new String[]{ma});
+
+        if (cursor.moveToFirst()) {
+            int slHienTai = cursor.getInt(0);
+            if (slHienTai > 1) {
+                // Nếu đang có nhiều hơn 1 thì trừ đi 1
+                ContentValues cv = new ContentValues();
+                cv.put("soLuongMua", slHienTai - 1);
+                db.update("giohang", cv, "maSP = ?", new String[]{ma});
+            } else {
+                // Nếu chỉ còn 1 thì xóa luôn khỏi giỏ hàng
+                db.delete("giohang", "maSP = ?", new String[]{ma});
+            }
+            cursor.close();
+            return true;
+        }
+        cursor.close();
+        return false;
     }
 
     public Cursor getGioHang() {
