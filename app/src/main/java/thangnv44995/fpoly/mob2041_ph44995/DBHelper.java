@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "User.db";
-    public static final int DB_VERSION = 4;
+    public static final int DB_VERSION = 5;
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -41,6 +41,23 @@ public class DBHelper extends SQLiteOpenHelper {
                 "giaSP INTEGER, " +
                 "soLuongMua INTEGER)");
 
+        // 5. Bảng hoadon (MỚI THÊM)
+        db.execSQL("CREATE TABLE hoadon(" +
+                "maHD TEXT PRIMARY KEY, " +
+                "tenNV TEXT, " +
+                "tenKH TEXT, " +
+                "ngayLap TEXT, " +
+                "tongTien REAL)");
+
+        // 6. Bảng hoadon_chitiet (MỚI THÊM)
+        db.execSQL("CREATE TABLE hoadon_chitiet(" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "maHD TEXT, " +
+                "tenSP TEXT, " +
+                "giaSP INTEGER, " +
+                "soLuong INTEGER, " +
+                "FOREIGN KEY (maHD) REFERENCES hoadon(maHD) ON DELETE CASCADE)");
+
         // Dữ liệu mẫu
         db.execSQL("INSERT INTO users VALUES('admin', 'admin123', 'Quản lý')");
         db.execSQL("INSERT INTO users VALUES('nv01', '123', 'Nhân viên')");
@@ -53,10 +70,12 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS danhmuc");
         db.execSQL("DROP TABLE IF EXISTS sanpham");
         db.execSQL("DROP TABLE IF EXISTS giohang");
+        db.execSQL("DROP TABLE IF EXISTS hoadon");
+        db.execSQL("DROP TABLE IF EXISTS hoadon_chitiet");
         onCreate(db);
     }
 
-    // ================= 1. QUẢN LÝ USER =================
+    // ================= 1. QUẢN LÝ USER (GIỮ NGUYÊN) =================
 
     public boolean checkUsername(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -89,7 +108,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return role;
     }
 
-    // ================= 2. QUẢN LÝ DANH MỤC =================
+    // ================= 2. QUẢN LÝ DANH MỤC  =================
 
     public Cursor getAllDanhMuc() {
         return getReadableDatabase().rawQuery("SELECT * FROM danhmuc", null);
@@ -115,7 +134,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.delete("danhmuc", "maDM = ?", new String[]{ma}) > 0;
     }
 
-    // ================= 3. QUẢN LÝ SẢN PHẨM =================
+    // ================= 3. QUẢN LÝ SẢN PHẨM  =================
 
     public Cursor getAllSanPham() {
         return getReadableDatabase().rawQuery("SELECT * FROM sanpham", null);
@@ -142,9 +161,8 @@ public class DBHelper extends SQLiteOpenHelper {
         return getWritableDatabase().delete("sanpham", "maSP = ?", new String[]{ma}) > 0;
     }
 
-    // ================= 4. QUẢN LÝ GIỎ HÀNG =================
+    // ================= 4. QUẢN LÝ GIỎ HÀNG  =================
 
-    // Hàm cộng sản phẩm (Đã có)
     public boolean addSanPhamToGioHang(String ma, String ten, int gia) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("SELECT soLuongMua FROM giohang WHERE maSP = ?", new String[]{ma});
@@ -164,27 +182,21 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    // HÀM MỚI: Giảm số lượng hoặc xóa nếu = 0
     public boolean minusSanPhamTrongGioHang(String ma) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("SELECT soLuongMua FROM giohang WHERE maSP = ?", new String[]{ma});
-
         if (cursor.moveToFirst()) {
             int slHienTai = cursor.getInt(0);
             if (slHienTai > 1) {
-                // Nếu đang có nhiều hơn 1 thì trừ đi 1
                 ContentValues cv = new ContentValues();
                 cv.put("soLuongMua", slHienTai - 1);
                 db.update("giohang", cv, "maSP = ?", new String[]{ma});
             } else {
-                // Nếu chỉ còn 1 thì xóa luôn khỏi giỏ hàng
                 db.delete("giohang", "maSP = ?", new String[]{ma});
             }
-            cursor.close();
-            return true;
         }
         cursor.close();
-        return false;
+        return true;
     }
 
     public Cursor getGioHang() {
@@ -193,5 +205,36 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void xoaGioHang() {
         getWritableDatabase().execSQL("DELETE FROM giohang");
+    }
+
+    // ================= 5. QUẢN LÝ HÓA ĐƠN  =================
+
+    public Cursor getAllHoaDon() {
+        return getReadableDatabase().rawQuery("SELECT * FROM hoadon", null);
+    }
+
+    public boolean deleteHoaDon(String maHD) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("hoadon", "maHD = ?", new String[]{maHD}) > 0;
+    }
+
+    public boolean insertHoaDon(String maHD, String tenNV, String tenKH, String ngay, double tong) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("maHD", maHD); cv.put("tenNV", tenNV);
+        cv.put("tenKH", tenKH); cv.put("ngayLap", ngay);
+        cv.put("tongTien", tong);
+
+        long result = db.insert("hoadon", null, cv);
+        if (result == -1) return false;
+
+        // Sau khi lưu hóa đơn, bê sản phẩm từ giỏ hàng sang chi tiết hóa đơn
+        db.execSQL("INSERT INTO hoadon_chitiet (maHD, tenSP, giaSP, soLuong) " +
+                "SELECT '" + maHD + "', tenSP, giaSP, soLuongMua FROM giohang");
+        return true;
+    }
+
+    public Cursor getChiTietHoaDon(String maHD) {
+        return getReadableDatabase().rawQuery("SELECT * FROM hoadon_chitiet WHERE maHD = ?", new String[]{maHD});
     }
 }
