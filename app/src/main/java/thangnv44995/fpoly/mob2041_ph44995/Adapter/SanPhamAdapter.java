@@ -21,8 +21,9 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.ViewHold
     private Context context;
     private ArrayList<SanPham> list;
     private DBHelper db;
+    private String userRole; // 1. Biến lưu vai trò để phân quyền
 
-    // Interface để xử lý sự kiện Sửa và Xóa ở Activity
+    // Interface xử lý sự kiện Sửa/Xóa
     public interface OnSanPhamClickListener {
         void onEdit(SanPham sp);
         void onDelete(SanPham sp);
@@ -34,9 +35,11 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.ViewHold
         this.listener = listener;
     }
 
-    public SanPhamAdapter(Context context, ArrayList<SanPham> list) {
+    // 2. Cập nhật Constructor để nhận role từ Activity gửi vào
+    public SanPhamAdapter(Context context, ArrayList<SanPham> list, String userRole) {
         this.context = context;
         this.list = list;
+        this.userRole = userRole;
         this.db = new DBHelper(context);
     }
 
@@ -51,12 +54,23 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         SanPham sp = list.get(position);
 
-        // Đổ dữ liệu lên giao diện
+        // Đổ dữ liệu
         holder.txtTenSP.setText(sp.getTenSP());
-        holder.txtGiaSP.setText(String.format("%,d đ", sp.getGiaSP())); // Định dạng số: 15,000 đ
+        holder.txtGiaSP.setText(String.format("%,d đ", sp.getGiaSP()));
         holder.txtTonKho.setText("Tồn kho: " + sp.getSoLuong());
 
-        // 1. Xử lý Thêm vào giỏ hàng
+        // --- PHẦN PHÂN QUYỀN TRỰC TIẾP TRÊN GIAO DIỆN ---
+        if (userRole != null && userRole.equalsIgnoreCase("Khách hàng")) {
+            // Nếu là Khách hàng: Ẩn nút Sửa và Xóa
+            holder.imgEdit.setVisibility(View.GONE);
+            holder.imgDelete.setVisibility(View.GONE);
+        } else {
+            // Nếu là Admin/Nhân viên: Hiện đầy đủ
+            holder.imgEdit.setVisibility(View.VISIBLE);
+            holder.imgDelete.setVisibility(View.VISIBLE);
+        }
+
+        // 1. Thêm vào giỏ hàng (Ai cũng dùng được)
         holder.imgAddCart.setOnClickListener(v -> {
             boolean check = db.addSanPhamToGioHang(sp.getMaSP(), sp.getTenSP(), sp.getGiaSP());
             if (check) {
@@ -64,12 +78,12 @@ public class SanPhamAdapter extends RecyclerView.Adapter<SanPhamAdapter.ViewHold
             }
         });
 
-        // 2. Xử lý Sửa
+        // 2. Xử lý Sửa (Chỉ click được khi nút đang hiện)
         holder.imgEdit.setOnClickListener(v -> {
             if (listener != null) listener.onEdit(sp);
         });
 
-        // 3. Xử lý Xóa
+        // 3. Xử lý Xóa (Chỉ click được khi nút đang hiện)
         holder.imgDelete.setOnClickListener(v -> {
             if (listener != null) listener.onDelete(sp);
         });

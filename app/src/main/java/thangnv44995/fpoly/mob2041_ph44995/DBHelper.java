@@ -50,7 +50,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 "ngayLap TEXT, " +
                 "tongTien REAL)");
 
-        // 6. Bảng hoadon_chitiet (MỚI THÊM)
+        // 6. Bảng hoadon_chitiet
         db.execSQL("CREATE TABLE hoadon_chitiet(" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "maHD TEXT, " +
@@ -62,6 +62,9 @@ public class DBHelper extends SQLiteOpenHelper {
         // Dữ liệu mẫu
         db.execSQL("INSERT INTO users VALUES('admin', 'admin123', 'Quản lý')");
         db.execSQL("INSERT INTO users VALUES('nv01', '123', 'Nhân viên')");
+        db.execSQL("INSERT INTO users VALUES('nv02', '123', 'Nhân viên')");
+        db.execSQL("INSERT INTO users VALUES('nv03', '123', 'Nhân viên')");
+        db.execSQL("INSERT INTO users VALUES('nv04', '123', 'Nhân viên')");
         db.execSQL("INSERT INTO danhmuc VALUES('DM001', 'Đồ uống'), ('DM002', 'Bánh kẹo')");
     }
 
@@ -76,7 +79,7 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    // ================= 1. QUẢN LÝ USER (GIỮ NGUYÊN) =================
+    // ================= 1. QUẢN LÝ USER =================
 
     public boolean checkUsername(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -278,5 +281,59 @@ public class DBHelper extends SQLiteOpenHelper {
                 "LIMIT ?";
 
         return db.rawQuery(sql, new String[]{tuNgay, denNgay, limit});
+    }
+
+    // ================= 8. QUẢN LÝ KHÁCH HÀNG =================
+
+    // Lấy danh sách tài khoản có role là 'Khách hàng'
+    public Cursor getDanhSachKhachHang() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT username, role FROM users WHERE role = 'Khách hàng'", null);
+    }
+
+    // Xóa tài khoản khách hàng
+    public boolean deleteKhachHang(String username) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Không cho phép xóa admin từ chức năng này để bảo mật
+        return db.delete("users", "username = ? AND role = 'Khách hàng'", new String[]{username}) > 0;
+    }
+
+    // Lấy danh sách hóa đơn theo tên khách hàng (để hiển thị lịch sử mua hàng của riêng họ)
+    public Cursor getHoaDonTheoKhachHang(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM hoadon WHERE tenKH = ?", new String[]{username});
+    }
+
+    // ================= 9. QUẢN LÝ NHÂN VIÊN =================
+
+    // Lấy danh sách tài khoản có role là 'Nhân viên'
+    public Cursor getDanhSachNhanVien() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        // Lọc những user có vai trò là Nhân viên
+        return db.rawQuery("SELECT username, role FROM users WHERE role = 'Nhân viên'", null);
+    }
+
+    // Xóa tài khoản nhân viên
+    public boolean deleteNhanVien(String username) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Thực hiện xóa nhân viên theo username
+        return db.delete("users", "username = ? AND role = 'Nhân viên'", new String[]{username}) > 0;
+    }
+
+    // Cập nhật thông tin nhân viên (Ví dụ đổi mật khẩu hoặc cập nhật lại đúng role)
+    public boolean updateNhanVien(String username, String newPassword) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("password", newPassword);
+        return db.update("users", cv, "username = ? AND role = 'Nhân viên'", new String[]{username}) > 0;
+    }
+
+    // Kiểm tra xem một user có phải là nhân viên hay không
+    public boolean isNhanVien(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE username = ? AND role = 'Nhân viên'", new String[]{username});
+        boolean result = cursor.getCount() > 0;
+        cursor.close();
+        return result;
     }
 }

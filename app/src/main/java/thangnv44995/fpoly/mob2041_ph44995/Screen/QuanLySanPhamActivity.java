@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView; // Thêm import này
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -34,28 +34,44 @@ public class QuanLySanPhamActivity extends AppCompatActivity {
     ArrayList<SanPham> list = new ArrayList<>();
     SanPhamAdapter adapter;
     Toolbar toolbar;
-    ImageView btnMoGioHang; // 1. Khai báo nút giỏ hàng
+    ImageView btnMoGioHang;
+    String userRole; // Lưu vai trò người dùng
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quan_ly_san_pham);
 
-        // 1. Ánh xạ các thành phần
+        // 1. Lấy dữ liệu Intent ngay đầu tiên
+        userRole = getIntent().getStringExtra("USER_ROLE");
+
+        // 2. Ánh xạ các thành phần
         rvSanPham = findViewById(R.id.rvSanPham);
         fabAdd = findViewById(R.id.fabAddSP);
         toolbar = findViewById(R.id.toolbarSP);
-        btnMoGioHang = findViewById(R.id.btnMoGioHang); // 2. Ánh xạ từ Toolbar
+        btnMoGioHang = findViewById(R.id.btnMoGioHang);
         db = new DBHelper(this);
 
-        // 2. Thiết lập Toolbar và nút Quay lại
+        // 3. Phân quyền ẩn nút thêm sản phẩm cho Khách hàng
+        if ("Khách hàng".equalsIgnoreCase(userRole)) {
+            fabAdd.setVisibility(View.GONE);
+        }
+
+        // 4. Thiết lập Toolbar
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(""); // Để trống để không đè lên cái TextView mình tự tạo trong Toolbar
+            getSupportActionBar().setTitle("");
         }
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        // 3. Xử lý chuyển sang màn hình Giỏ hàng
+        // 5. Thiết lập RecyclerView (CHỈ LÀM 1 LẦN)
+        loadData();
+        // QUAN TRỌNG: Truyền userRole vào đây
+        adapter = new SanPhamAdapter(this, list, userRole);
+        rvSanPham.setLayoutManager(new LinearLayoutManager(this));
+        rvSanPham.setAdapter(adapter);
+
+        // 6. Xử lý sự kiện Giỏ hàng
         if (btnMoGioHang != null) {
             btnMoGioHang.setOnClickListener(v -> {
                 Intent intent = new Intent(QuanLySanPhamActivity.this, GioHangActivity.class);
@@ -63,13 +79,7 @@ public class QuanLySanPhamActivity extends AppCompatActivity {
             });
         }
 
-        // 4. Đổ dữ liệu lên RecyclerView
-        loadData();
-        adapter = new SanPhamAdapter(this, list);
-        rvSanPham.setLayoutManager(new LinearLayoutManager(this));
-        rvSanPham.setAdapter(adapter);
-
-        // 5. Lắng nghe sự kiện từ Adapter (Sửa/Xóa)
+        // 7. Lắng nghe sự kiện Sửa/Xóa từ Adapter
         adapter.setOnSanPhamClickListener(new SanPhamAdapter.OnSanPhamClickListener() {
             @Override
             public void onEdit(SanPham sp) {
@@ -82,11 +92,10 @@ public class QuanLySanPhamActivity extends AppCompatActivity {
             }
         });
 
-        // 6. Nút Thêm sản phẩm mới
+        // 8. Nút Thêm sản phẩm mới
         fabAdd.setOnClickListener(v -> showDialogSanPham(null));
     }
 
-    // Các hàm loadData, showDialogSanPham, showDialogXoa giữ nguyên như cũ...
     private void loadData() {
         list.clear();
         Cursor cursor = db.getAllSanPham();
@@ -107,6 +116,10 @@ public class QuanLySanPhamActivity extends AppCompatActivity {
     }
 
     private void showDialogSanPham(SanPham spSua) {
+        if ("Khách hàng".equalsIgnoreCase(userRole)) {
+            Toast.makeText(this, "Bạn không có quyền thực hiện chức năng này!", Toast.LENGTH_SHORT).show();
+            return; // Thoát luôn, không chạy code bên dưới nữa
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_them_sanpham, null);
         builder.setView(view);
@@ -173,7 +186,7 @@ public class QuanLySanPhamActivity extends AppCompatActivity {
                     Toast.makeText(this, "Thất bại!", Toast.LENGTH_SHORT).show();
                 }
             } catch (Exception e) {
-                Toast.makeText(this, "Nhập đầy đủ thông tin số!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Lỗi nhập liệu!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -182,6 +195,10 @@ public class QuanLySanPhamActivity extends AppCompatActivity {
     }
 
     private void showDialogXoa(SanPham sp) {
+        if ("Khách hàng".equalsIgnoreCase(userRole)) {
+            Toast.makeText(this, "Bạn không có quyền thực hiện chức năng này!", Toast.LENGTH_SHORT).show();
+            return; // Thoát luôn, không chạy code bên dưới nữa
+        }
         new AlertDialog.Builder(this)
                 .setTitle("Xác nhận xóa")
                 .setMessage("Xóa sản phẩm " + sp.getTenSP() + "?")

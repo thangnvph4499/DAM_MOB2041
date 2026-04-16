@@ -17,7 +17,7 @@ import thangnv44995.fpoly.mob2041_ph44995.R;
 public class HomeActivity extends AppCompatActivity {
 
     // 1. Thêm btnHoaDon vào danh sách khai báo
-    LinearLayout layoutThongKe, btnNhanVien, btnDangXuat, btnDanhMuc, btnSanPham, btnHoaDon,btnDoanhThu,btnTopSanPham;
+    LinearLayout layoutThongKe, btnNhanVien, btnDangXuat, btnDanhMuc, btnSanPham, btnHoaDon,btnDoanhThu,btnTopSanPham,btnKhachHang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +49,19 @@ public class HomeActivity extends AppCompatActivity {
         btnHoaDon = findViewById(R.id.btnHoaDon);
         btnDoanhThu = findViewById(R.id.btnDoanhThu);
         btnTopSanPham = findViewById(R.id.btnTopSanPham);
+        btnKhachHang = findViewById(R.id.btnKhachHang);
     }
 
     private void phanQuyenGiaoDien(String role) {
         if (role == null) return;
-        if (role.equalsIgnoreCase("Nhân viên")) {
+
+        if (role.equalsIgnoreCase("Khách hàng")) {
+            // 1. Ẩn thống kê và quản lý nhân viên
+            if (layoutThongKe != null) layoutThongKe.setVisibility(View.GONE);
+            if (btnNhanVien != null) btnNhanVien.setVisibility(View.GONE);
+
+
+        } else if (role.equalsIgnoreCase("Nhân viên")) {
             if (layoutThongKe != null) layoutThongKe.setVisibility(View.GONE);
             if (btnNhanVien != null) btnNhanVien.setVisibility(View.GONE);
         }
@@ -94,6 +102,20 @@ public class HomeActivity extends AppCompatActivity {
         if (btnTopSanPham != null) {
             btnTopSanPham.setOnClickListener(v -> {
                 Intent intent = new Intent(HomeActivity.this, ThongKeTopActivity.class);
+                startActivity(intent);
+            });
+        }
+        // 6. Chuyển sang màn hình Quản lý khách hàng
+        if (btnKhachHang != null) {
+            btnKhachHang.setOnClickListener(v -> {
+                Intent intent = new Intent(HomeActivity.this, QuanLyKhachHangActivity.class);
+                startActivity(intent);
+            });
+        }
+        // 7. Chuyển sang màn hình Quản lý nhân viên
+        if (btnNhanVien != null) {
+            btnNhanVien.setOnClickListener(v -> {
+                Intent intent = new Intent(HomeActivity.this, QuanLyNhanVienActivity.class);
                 startActivity(intent);
             });
         }
