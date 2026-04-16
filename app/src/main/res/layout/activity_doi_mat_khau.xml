@@ -1,84 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F0F2F5"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="24dp"
-    tools:context=".Screen.RegisterActivity">
+    android:padding="24dp">
 
     <ImageView
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginBottom="20dp"
-        android:src="@android:drawable/ic_menu_edit"
-        app:tint="#4CAF50" />
+        android:src="@android:drawable/ic_lock_idle_lock"
+        app:tint="#3F51B5" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
-        android:text="TẠO TÀI KHOẢN MỚI"
-        android:textColor="#4CAF50"
+        android:text="ĐỔI MẬT KHẨU"
+        android:textColor="#3F51B5"
         android:textSize="22sp"
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/edtUser"
+        android:id="@+id/edtOldPass"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_marginBottom="15dp"
         android:background="@drawable/bg_input_login"
-        android:drawableStart="@android:drawable/ic_menu_myplaces"
-        android:drawablePadding="12dp"
-        android:hint="Username"
-        android:paddingHorizontal="15dp" />
-
-    <EditText
-        android:id="@+id/edtPass"
-        android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:layout_marginBottom="15dp"
-        android:background="@drawable/bg_input_login"
-        android:drawableStart="@android:drawable/ic_lock_idle_lock"
-        android:drawablePadding="12dp"
-        android:hint="Password"
+        android:hint="Mật khẩu cũ"
         android:inputType="textPassword"
         android:paddingHorizontal="15dp" />
 
     <EditText
-        android:id="@+id/edtRePass"
+        android:id="@+id/edtNewPass"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/bg_input_login"
+        android:hint="Mật khẩu mới"
+        android:inputType="textPassword"
+        android:paddingHorizontal="15dp" />
+
+    <EditText
+        android:id="@+id/edtReNewPass"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_marginBottom="25dp"
         android:background="@drawable/bg_input_login"
-        android:drawableStart="@android:drawable/ic_lock_lock"
-        android:drawablePadding="12dp"
-        android:hint="Nhập lại mật khẩu"
+        android:hint="Xác nhận mật khẩu mới"
         android:inputType="textPassword"
         android:paddingHorizontal="15dp" />
 
     <Button
-        android:id="@+id/btnRegister"
+        android:id="@+id/btnSavePass"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:backgroundTint="#4CAF50"
-        android:text="Đăng ký ngay"
-        android:textAllCaps="true"
-        android:textSize="16sp"
+        android:backgroundTint="#3F51B5"
+        android:text="Cập nhật mật khẩu"
         android:textStyle="bold"
         app:cornerRadius="10dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:onClick="finish"
-        android:text="Đã có tài khoản? Đăng nhập"
-        android:textColor="#666666" />
 
 </LinearLayout>

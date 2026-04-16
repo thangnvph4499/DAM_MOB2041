@@ -15,9 +15,12 @@ import androidx.core.view.WindowInsetsCompat;
 import thangnv44995.fpoly.mob2041_ph44995.R;
 
 public class HomeActivity extends AppCompatActivity {
+    // Thêm duy nhất dòng này để lưu tên user
+    String user;
 
     // 1. Thêm btnHoaDon vào danh sách khai báo
-    LinearLayout layoutThongKe, btnNhanVien, btnDangXuat, btnDanhMuc, btnSanPham, btnHoaDon,btnDoanhThu,btnTopSanPham,btnKhachHang;
+    LinearLayout layoutThongKe, btnNhanVien, btnDangXuat, btnDanhMuc, btnSanPham, btnHoaDon,btnDoanhThu,btnTopSanPham,
+            btnKhachHang,btnTopKhachHang,btnDoiMatKhau;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,7 @@ public class HomeActivity extends AppCompatActivity {
 
         initViews();
         String role = getIntent().getStringExtra("USER_ROLE");
+        user = getIntent().getStringExtra("USER_NAME");
         phanQuyenGiaoDien(role);
         setClickEvents();
     }
@@ -50,6 +54,8 @@ public class HomeActivity extends AppCompatActivity {
         btnDoanhThu = findViewById(R.id.btnDoanhThu);
         btnTopSanPham = findViewById(R.id.btnTopSanPham);
         btnKhachHang = findViewById(R.id.btnKhachHang);
+        btnTopKhachHang = findViewById(R.id.btnTopKhachHang);
+        btnDoiMatKhau = findViewById(R.id.btnDoiMatKhau);
     }
 
     private void phanQuyenGiaoDien(String role) {
@@ -120,9 +126,28 @@ public class HomeActivity extends AppCompatActivity {
             });
         }
 
+        // 8. Chuyển sang màn hình Thống kê top khách hàng
+        if (btnTopKhachHang != null) {
+            btnTopKhachHang.setOnClickListener(v -> {
+                Intent intent = new Intent(HomeActivity.this, ThongKeKhachHangActivity.class);
+                startActivity(intent);
+            });
+        }
+
+        // 9. Chuyển sang màn hình đổi mật khẩu
+        if (btnDoiMatKhau != null) {
+            btnDoiMatKhau.setOnClickListener(v -> {
+                Intent intent = new Intent(HomeActivity.this, DoiMatKhauActivity.class);
+                // Thêm duy nhất dòng này để gửi tên tài khoản đi
+                intent.putExtra("USER_NAME", user);
+                startActivity(intent);
+            });
+        }
+
         if (btnDangXuat != null) {
             btnDangXuat.setOnClickListener(v -> {
-                Toast.makeText(this, "Đã đăng xuất", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                startActivity(intent);
                 finish();
             });
         }

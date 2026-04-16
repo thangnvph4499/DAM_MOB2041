@@ -10,7 +10,7 @@ import android.util.Log;
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "User.db";
-    public static final int DB_VERSION = 7;
+    public static final int DB_VERSION = 10;
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -61,10 +61,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         // Dữ liệu mẫu
         db.execSQL("INSERT INTO users VALUES('admin', 'admin123', 'Quản lý')");
-        db.execSQL("INSERT INTO users VALUES('nv01', '123', 'Nhân viên')");
         db.execSQL("INSERT INTO users VALUES('nv02', '123', 'Nhân viên')");
         db.execSQL("INSERT INTO users VALUES('nv03', '123', 'Nhân viên')");
-        db.execSQL("INSERT INTO users VALUES('nv04', '123', 'Nhân viên')");
         db.execSQL("INSERT INTO danhmuc VALUES('DM001', 'Đồ uống'), ('DM002', 'Bánh kẹo')");
     }
 
@@ -335,5 +333,42 @@ public class DBHelper extends SQLiteOpenHelper {
         boolean result = cursor.getCount() > 0;
         cursor.close();
         return result;
+    }
+    // ================= 10. THỐNG KÊ TOP KHÁCH HÀNG =================
+
+    public Cursor getTopKhachHang() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql = "SELECT tenKH, tongTien FROM hoadon";
+        return db.rawQuery(sql, null);
+    }
+    // ================= 11. ĐỔI MẬT KHẨU =================
+
+    /**
+     * Hàm cập nhật mật khẩu cho người dùng
+     * @return 1: Thành công, -1: Sai mật khẩu cũ, 0: Thất bại
+     */
+    public int updatePassword(String username, String oldPass, String newPass) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // 1. Kiểm tra xem mật khẩu cũ có khớp với username này không
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM users WHERE username = ? AND password = ?",
+                new String[]{username, oldPass}
+        );
+
+        if (cursor.getCount() > 0) {
+            // 2. Nếu khớp, tiến hành cập nhật mật khẩu mới
+            ContentValues cv = new ContentValues();
+            cv.put("password", newPass);
+
+            long result = db.update("users", cv, "username = ?", new String[]{username});
+            cursor.close();
+
+            if (result > 0) return 1; // Cập nhật thành công
+            else return 0; // Lỗi không xác định
+        }
+
+        cursor.close();
+        return -1; // Sai mật khẩu cũ
     }
 }
